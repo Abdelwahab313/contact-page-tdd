@@ -4,9 +4,10 @@ import {expect} from 'chai';
 
 
 import ContactForm from './ContactForm.jsx';
+var contactWrapper = shallow(<ContactForm />);
 
-describe("Contact Form elements", () => {
-	var contactWrapper = shallow(<ContactForm />);
+describe("Form elements existance", () => {
+	
 
 	it("a html contact form container exists", () => {
 		expect(contactWrapper.find('form').length).to.be.equal(1);
@@ -25,4 +26,12 @@ describe("Contact Form elements", () => {
 	it("form submit button exists", () => {
 		expect(contactWrapper.find('input[type="submit"]').length).to.be.equal(1);
 	});
+});
+
+describe('Form validations',()=>{
+	it('form submit button should be disable when username field is empty',() => {
+		var userNameValue = contactWrapper.find('input[name="fname"]').get(0).props.value;
+		var submitBtn = contactWrapper.find('input[type="submit"]').get(0);
+		expect(('disabled' in submitBtn.props)&&(!userNameValue)).to.be.true;
+	})
 });

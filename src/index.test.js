@@ -29,9 +29,17 @@ describe("Form elements existance", () => {
 });
 
 describe('Form validations',()=>{
+	var submitBtn = contactWrapper.find('input[type="submit"]').get(0);
+  	var userNameElement= contactWrapper.find('input[name="fname"]');
+  	
+  	var emailElement= contactWrapper.find('input[type="email"]');  	
+	beforeEach(() => {
+
+	});
+
 	it('form submit button should be disabled when username field is empty',() => {
 		var userNameValue = contactWrapper.find('input[name="fname"]').get(0).props.value;
-		var submitBtn = contactWrapper.find('input[type="submit"]').get(0);
+		submitBtn = contactWrapper.find('input[type="submit"]').get(0);
 		expect(('disabled' in submitBtn.props)&&(!userNameValue)).to.be.true;
 	});	
 	it('form submit button should be disabled when email field is empty', () =>{
@@ -40,22 +48,55 @@ describe('Form validations',()=>{
 		expect(('disabled' in submitBtn.props)&&(!emailValue)).to.be.true;
 	});
 	it('form sumbit button should be enabled when username field and email field is not empty', () => {
-		var emailValue = contactWrapper.find('input[name="email"]').get(0).props.value;
-		var userNameValue = contactWrapper.find('input[name="fname"]').get(0).props.value;
-
-		var emailElement = contactWrapper.find('input[name="email"]');
-		var userNameElement = contactWrapper.find('input[name="fname"]');		
-
-		var submitBtn = contactWrapper.find('input[type="submit"]').get(0);
-
+		userNameElement= contactWrapper.find('input[name="fname"]');		
+		emailElement = contactWrapper.find('input[name="email"]');
+		var submitBtnBeforeEventTrigger = contactWrapper.find('input[type="submit"]').get(0);
 		const eventUsername = {target: {name: "fname", value: "testname"}};
 		const eventEmail = {target: {name: "email", value: "test@gmail.com"}};
-
 		userNameElement.simulate('change', eventUsername);
 		emailElement.simulate('change', eventEmail);
-		
-		expect((!('disabled' in submitBtn.props))&&(emailValue&&userNameValue)).to.be.true;
+		var submitBtnAfterTrigger = contactWrapper.find('input[type="submit"]').get(0);
+		expect(!submitBtnAfterTrigger.props.disabled).to.be.true;
+	});
+
+	it('form sumbit button should be disabled if user tried to input a whitespace', () => {
+		userNameElement= contactWrapper.find('input[name="fname"]');		
+		emailElement = contactWrapper.find('input[name="email"]');
+		var submitBtnBeforeEventTrigger = contactWrapper.find('input[type="submit"]').get(0);
+		const eventUsername = {target: {name: "fname", value: "		"}};
+		const eventEmail = {target: {name: "email", value: "       "}};
+		userNameElement.simulate('change', eventUsername);
+		emailElement.simulate('change', eventEmail);
+		var submitBtnAfterTrigger = contactWrapper.find('input[type="submit"]').get(0);
+		expect(submitBtnAfterTrigger.props.disabled).to.be.true;
 	});
 
 
+	it('form sumbit button should be disabled if user tried to input a data and removed it again', () => {
+		userNameElement= contactWrapper.find('input[name="fname"]');		
+		emailElement = contactWrapper.find('input[name="email"]');
+		var submitBtnBeforeDataInput = contactWrapper.find('input[type="submit"]').get(0);
+		userNameElement.simulate('change',{target: {name: "fname", value: "testname"}});
+		emailElement.simulate('change', {target: {name: "email", value: "test@gmail.com"}});
+		userNameElement.simulate('change',{target: {name: "fname", value: ""}});
+		emailElement.simulate('change', {target: {name: "email", value: ""}});
+		var submitBtnAfterDataInput = contactWrapper.find('input[type="submit"]').get(0);
+		var submitBtnAfterDataRemoval = contactWrapper.find('input[type="submit"]').get(0);
+		expect(submitBtnAfterDataRemoval.props.disabled).to.be.true;
+	});
+
+	it('reject email invalid format', () => {
+		userNameElement= contactWrapper.find('input[name="fname"]');		
+		emailElement = contactWrapper.find('input[name="email"]');
+		var submitBtnBeforeDataInput = contactWrapper.find('input[type="submit"]').get(0);
+		emailElement.simulate('change', {target: {name: "email", value: "invalidmail"}});
+		expect(!contactWrapper.state().formValues.email).to.be.true;
+	});
+
+
+	afterEach(() => {
+		contactWrapper = shallow(<ContactForm />);
+  		userNameElement.props.value=""
+  		emailElement.props.value=""
+	});
 });

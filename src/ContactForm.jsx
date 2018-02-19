@@ -11,8 +11,8 @@ export default class ContactForm extends React.Component {
    					<input type="email" id="lname" name="email" placeholder="Your email.." />
 
    					<textarea id="subject" name="subject" placeholder="Write something.."></textarea>
-   					<span id="errorSp" style={{display:"block"}}>{this.state.isDisabled?"error":"0	"}</span>
-    				<input type="submit" value="Submit" disabled={this.state.isDisabled}/>
+   					
+    				<input type="submit" value="Submit" disabled/>
 				</form>
 
     			)

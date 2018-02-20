@@ -2,7 +2,10 @@ import {shallow , mount} from 'enzyme';
 import React from 'react'
 import {expect} from 'chai';
 
+var request = require('request');
+
 import ContactForm from './ContactForm.jsx';
+
 
 var contactWrapper = shallow(<ContactForm />);
 
@@ -86,7 +89,7 @@ describe('Form validations',()=>{
 	});
 
 	it('reject email invalid format', () => {
-		userNameElement= contactWrapper.find('input[name="fname"]');		
+		userNameElement= contactWrapper.find('input[name="fname"]');	
 		emailElement = contactWrapper.find('input[name="email"]');
 		var submitBtnBeforeDataInput = contactWrapper.find('input[type="submit"]').get(0);
 		emailElement.simulate('change', {target: {name: "email", value: "invalidmail"}});
@@ -100,3 +103,13 @@ describe('Form validations',()=>{
   		emailElement.props.value=""
 	});
 });
+
+ describe("Server request" , () => {
+ 	it("server is up and running", (done) =>{
+ 		request('http://localhost:4000/', (error, response, body) => {
+ 			//expect(response).to.not.be.undefined;
+
+ 		})
+ 		done();
+ 	});
+ })

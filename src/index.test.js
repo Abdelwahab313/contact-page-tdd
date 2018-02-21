@@ -4,6 +4,10 @@ import {expect} from 'chai';
 
 var request = require('request');
 
+var chai = require('chai')
+  , chaiHttp = require('chai-http');
+
+chai.use(chaiHttp);
 import ContactForm from './ContactForm.jsx';
 
 
@@ -103,13 +107,40 @@ describe('Form validations',()=>{
   		emailElement.props.value=""
 	});
 });
-
+/* PLEASE REVIEW ME */ 
  describe("Server request" , () => {
  	it("server is up and running", (done) =>{
- 		request('http://localhost:4000/', (error, response, body) => {
- 			//expect(response).to.not.be.undefined;
-
- 		})
- 		done();
+		chai.request('http://localhost:4000')
+  		.get('/')
+  		.end(function (err, res) {
+		     expect(res).to.have.status(200);
+		});
+  	done();
  	});
- })
+
+ 	it("server responsed on '/contactus' with status code 200 ", (done) =>{
+ 		try{
+			chai.request('http://localhost:4000	')
+  			.get('/contactus')
+  			.end(function (err, res) {
+  			// console.log(res)
+		     // expect(res).to.have.status(200);
+			});
+  		}catch(exc){
+
+  		}
+  		done();
+ 	});
+
+ 	it("server responsed to request with params [username,email,message] on '/contactus' with json body ", (done) =>{
+		try{
+			chai.request('http://localhost:4000')
+  			.get('/contactus?username=testusername&email=test@mail.com&message=this is a test message body')
+  			.end(function (err, res) {
+		     expect(res).to.have.status(200);
+			});
+  		}catch(exce){}
+  		done();
+ 	}); 
+ });
+ /* END OF  REVIEW ME */

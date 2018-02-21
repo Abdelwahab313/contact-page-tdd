@@ -33,16 +33,20 @@ describe("Form elements existance", () => {
 	it("form submit button exists", () => {
 		expect(contactWrapper.find('input[type="submit"]').length).to.be.equal(1);
 	});
+	it("form span should exists ", () => {
+		expect(contactWrapper.find('span').length).to.be.equal(1);
+	});
+	it("form span should be hidden default ", () => {
+		expect(contactWrapper.find('span').get(0).props.style.display).to.be.equal('none');
+	});
+
 });
 
 describe('Form validations',()=>{
 	var submitBtn = contactWrapper.find('input[type="submit"]').get(0);
   	var userNameElement= contactWrapper.find('input[name="fname"]');
-  	
   	var emailElement= contactWrapper.find('input[type="email"]');  	
-	beforeEach(() => {
 
-	});
 
 	it('form submit button should be disabled when username field is empty',() => {
 		var userNameValue = contactWrapper.find('input[name="fname"]').get(0).props.value;
@@ -107,40 +111,25 @@ describe('Form validations',()=>{
   		emailElement.props.value=""
 	});
 });
-/* PLEASE REVIEW ME */ 
- describe("Server request" , () => {
- 	it("server is up and running", (done) =>{
-		chai.request('http://localhost:4000')
-  		.get('/')
-  		.end(function (err, res) {
-		     expect(res).to.have.status(200);
-		});
-  	done();
- 	});
 
- 	it("server responsed on '/contactus' with status code 200 ", (done) =>{
- 		try{
-			chai.request('http://localhost:4000	')
-  			.get('/contactus')
-  			.end(function (err, res) {
-  			// console.log(res)
-		     // expect(res).to.have.status(200);
-			});
-  		}catch(exc){
+describe("Form submission", () => {
+	it("should display the span 'Successful' on submitting the form", () => {
+		var userNameElement= contactWrapper.find('input[name="fname"]');		
+		var emailElement = contactWrapper.find('input[name="email"]');
+		var submitBtnBeforeEventTrigger = contactWrapper.find('input[type="submit"]').get(0);
+		const eventUsername = {target: {name: "fname", value: "Test"}};
+		const eventEmail = {target: {name: "email", value: "test@gmail.csad"}};
+		
+		userNameElement.simulate('change', eventUsername);
+		emailElement.simulate('change', eventEmail);
+		var submitBtnAfterTrigger = contactWrapper.find('input[type="submit"]');
+		var formElement = contactWrapper.find('form')
+		// formElement.simulate('submit');
 
-  		}
-  		done();
- 	});
+		const event = {target: {name: "fname", value: "testname"}};
+		formElement.simulate('submit', );
+		var submitSpan = contactWrapper.find('.submitted').get(0);
+		expect(contactWrapper.find('span').get(0).props.style.display).to.be.equal('block');
+	})
+})
 
- 	it("server responsed to request with params [username,email,message] on '/contactus' with json body ", (done) =>{
-		try{
-			chai.request('http://localhost:4000')
-  			.get('/contactus?username=testusername&email=test@mail.com&message=this is a test message body')
-  			.end(function (err, res) {
-		     expect(res).to.have.status(200);
-			});
-  		}catch(exce){}
-  		done();
- 	}); 
- });
- /* END OF  REVIEW ME */

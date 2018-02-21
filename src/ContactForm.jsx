@@ -6,10 +6,12 @@ export default class ContactForm extends React.Component {
 		super(props)
 		this.state = {
 			isDisabled:true,
-			formValues:{fname:'',email:''}
+			submitted:'none',
+			formValues:{fname:'',email:''},
 		}
-		this.inputHandleChange = this.inputHandleChange.bind(this) 
-		this.handleSubmitDisability = this.handleSubmitDisability.bind(this) 
+		this.inputHandleChange = this.inputHandleChange.bind(this); 
+		this.handleSubmitDisability = this.handleSubmitDisability.bind(this); 
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	inputHandleChange(evt){
 		let formValues = Object.assign({}, this.state.formValues);    //creating copy of object
@@ -31,15 +33,23 @@ export default class ContactForm extends React.Component {
 	handleSubmitDisability(){
 		this.setState({isDisabled:!(this.state.formValues.fname.trim()&&this.state.formValues.email.trim())})
 	}
+	handleSubmit(evt){
+		if(this.state.isDisabled) return;
+		if(evt){evt.preventDefault()}
+	    
+		this.setState({submitted: 'block'});
+
+	}
 
 	render() {
 		return (
-				<form>
+				<form onSubmit={this.handleSubmit}>
 					<h2>Contact us</h2>
 					<input type="text"  id="fname" onChange={this.inputHandleChange}  name="fname" placeholder="Your name.." />
    					<input type="email" id="lname" onChange={this.inputHandleChange}  name="email" placeholder="Your email.." />
    					<textarea id="subject" name="subject" placeholder="Write something.."></textarea>
     				<input type="submit" value="Submit" disabled={this.state.isDisabled}/>
+    				<span className="submitted" style={{display:this.state.submitted}}>Successful</span>
 				</form>
     			);
 	}

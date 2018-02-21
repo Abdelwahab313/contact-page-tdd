@@ -132,4 +132,3 @@ describe("Form submission", () => {
 		expect(contactWrapper.find('span').get(0).props.style.display).to.be.equal('block');
 	})
 })
-
